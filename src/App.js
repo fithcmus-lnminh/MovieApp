@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import classes from "./App.module.css";
 import MoviesList from "./components/MoviesList";
+import AddMovie from "./components/AddMovie";
 
 function App() {
   const [movies, setMovies] = useState([]);
@@ -38,6 +39,10 @@ function App() {
     fetchMoviesHandler(); //if function don't use use callback, effect don't know which is changed in function
   }, [fetchMoviesHandler]);
 
+  const addMovieHandler = (movie) => {
+    console.log(movie);
+  };
+
   let content = <h3>Found no movies</h3>;
 
   if (movies.length > 0) {
@@ -59,6 +64,9 @@ function App() {
 
   return (
     <React.Fragment>
+      <section>
+        <AddMovie onAddMovie={addMovieHandler} />
+      </section>
       <section>
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>
       </section>
