@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-
+import classes from "./App.module.css";
 import MoviesList from "./components/MoviesList";
-import "./App.css";
 
 function App() {
   const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function fetchMoviesHandler() {
+    setIsLoading(true);
     const response = await fetch("https://swapi.dev/api/films"); //default method is GET
     const data = await response.json();
 
@@ -19,6 +20,7 @@ function App() {
       };
     });
     setMovies(transformedMovies);
+    setIsLoading(false);
   }
 
   return (
@@ -27,7 +29,21 @@ function App() {
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>
       </section>
       <section>
-        <MoviesList movies={movies} />
+        {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
+        {!isLoading && movies.length === 0 && <h3>Found no movies</h3>}
+        {isLoading && (
+          <div>
+            <div className={classes["loading"]}>
+              <div className={classes["loading-dot"]}></div>
+              <div className={classes["loading-dot"]}></div>
+              <div className={classes["loading-dot"]}></div>
+              <div className={classes["loading-dot"]}></div>
+              <div className={classes["loading-dot"]}></div>
+              <div className={classes["loading-dot"]}></div>
+            </div>
+            <h3>Loading...</h3>
+          </div>
+        )}
       </section>
     </React.Fragment>
   );
