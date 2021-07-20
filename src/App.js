@@ -7,6 +7,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  //use useCallback to use the external state
   const fetchMoviesHandler = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -34,7 +35,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    fetchMoviesHandler();
+    fetchMoviesHandler(); //if function don't use use callback, effect don't know which is changed in function
   }, [fetchMoviesHandler]);
 
   let content = <h3>Found no movies</h3>;
