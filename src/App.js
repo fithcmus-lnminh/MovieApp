@@ -33,14 +33,7 @@ function App() {
         {!isLoading && movies.length === 0 && <h3>Found no movies</h3>}
         {isLoading && (
           <div>
-            <div className={classes["loading"]}>
-              <div className={classes["loading-dot"]}></div>
-              <div className={classes["loading-dot"]}></div>
-              <div className={classes["loading-dot"]}></div>
-              <div className={classes["loading-dot"]}></div>
-              <div className={classes["loading-dot"]}></div>
-              <div className={classes["loading-dot"]}></div>
-            </div>
+            <div className={classes.loader}></div>
             <h3>Loading...</h3>
           </div>
         )}
