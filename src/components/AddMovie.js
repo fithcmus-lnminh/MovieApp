@@ -13,6 +13,7 @@ function AddMovie(props) {
     // could add validation here...
 
     const movie = {
+      //id will be added by Firebase automatically
       title: titleRef.current.value,
       openingText: openingTextRef.current.value,
       releaseDate: releaseDateRef.current.value,
@@ -35,7 +36,13 @@ function AddMovie(props) {
         <label htmlFor="date">Release Date</label>
         <input type="text" id="date" ref={releaseDateRef} />
       </div>
-      <button>Add Movie</button>
+      {!props.isLoading && <button>Add Movie</button>}
+      {props.isLoading && (
+        <div>
+          <div className={classes.loader}></div>
+          <h3>Loading...</h3>
+        </div>
+      )}
     </form>
   );
 }

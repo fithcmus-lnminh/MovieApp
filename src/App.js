@@ -6,6 +6,7 @@ import AddMovie from "./components/AddMovie";
 function App() {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingPost, setIsLoadingPost] = useState(false);
   const [error, setError] = useState(null);
 
   //use useCallback to use the external state
@@ -13,22 +14,27 @@ function App() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch("https://swapi.dev/api/films"); //default method is GET
+      const response = await fetch(
+        "https://react-http-b2a24-default-rtdb.firebaseio.com/movies.json"
+      ); //default method is GET
       if (!response.ok) {
         throw new Error("Oops! Something went wrong!");
       }
 
       const data = await response.json();
 
-      const transformedMovies = data.results.map((movieData) => {
-        return {
-          id: movieData.episode_id,
-          title: movieData.title,
-          openingText: movieData.opening_crawl,
-          releaseDate: movieData.release_date,
-        };
-      });
-      setMovies(transformedMovies);
+      const loadedMovies = [];
+
+      for (const key in data) {
+        loadedMovies.push({
+          id: key,
+          title: data[key].title,
+          openingText: data[key].openingText,
+          releaseDate: data[key].releaseDate,
+        });
+      }
+
+      setMovies(loadedMovies);
     } catch (error) {
       setError(error.message);
     }
@@ -39,9 +45,27 @@ function App() {
     fetchMoviesHandler(); //if function don't use use callback, effect don't know which is changed in function
   }, [fetchMoviesHandler]);
 
-  const addMovieHandler = (movie) => {
-    console.log(movie);
-  };
+  async function addMovieHandler(movie) {
+    try {
+      setIsLoadingPost(true);
+      setError(null);
+      const response = await fetch(
+        "https://react-http-b2a24-default-rtdb.firebaseio.com/movies.json",
+        {
+          method: "POST",
+          body: JSON.stringify(movie),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+    } catch (err) {
+      setError(err);
+    }
+    setIsLoadingPost(false);
+  }
 
   let content = <h3>Found no movies</h3>;
 
@@ -65,7 +89,7 @@ function App() {
   return (
     <React.Fragment>
       <section>
-        <AddMovie onAddMovie={addMovieHandler} />
+        <AddMovie onAddMovie={addMovieHandler} isLoading={isLoadingPost} />
       </section>
       <section>
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>
